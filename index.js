@@ -1,6 +1,6 @@
 const debug = true
 
-const GunProxy = function () {
+export default function () {
   const proxy = {};
   // trystero tracker
   proxy.trystero_room = {};
