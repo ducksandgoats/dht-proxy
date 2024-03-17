@@ -5,27 +5,19 @@ export default function () {
   // trystero tracker
   proxy.trystero_room = {};
   // initialize to receive back the proxy object for a specific configuration
-  proxy.initialize = function (conf, joinRoom) {
-    var config = {};
-    // defaults trystero
-    config.trystero_enabled = conf.trystero_enabled ?? true
-    config.trystero_app_id = conf.trystero_app_id || "gun_dht"
-    config.trystero_mesh_id = conf.trystero_mesh_id || "graph_universal_node"
-    if(joinRoom === undefined) config.trystero_enabled = false
+  proxy.initialize = function (conf, ns, joinRoom) {
 
     //Trystero Module Settings
-    if(config.trystero_enabled) {
-      proxy.trystero_room = joinRoom({appId: config.trystero_app_id}, config.trystero_mesh_id)
-      proxy.trystero_room.onPeerJoin(id => console.log(`Trystero ID: ${id} joined`))
-      proxy.trystero_room.onPeerLeave(id => console.log(`Trystero ID: ${id} left`))
-      const [sendMsg, onMsg] = proxy.trystero_room.makeAction('gun-protocol')
-      onMsg(proxy.receiver)
-      proxy.addSender(sendMsg)
-    }
+    proxy.trystero_room = joinRoom(conf, ns)
+    proxy.trystero_room.onPeerJoin(id => console.log(`Trystero ID: ${id} joined`))
+    proxy.trystero_room.onPeerLeave(id => console.log(`Trystero ID: ${id} left`))
+    const [sendMsg, onMsg] = proxy.trystero_room.makeAction('gun-protocol')
+    onMsg(proxy.receiver)
+    proxy.addSender(sendMsg)
 
     // WebSocketProxy definition
 
-    const WebSocketProxy = function (url) {
+    return function (url) {
       const websocketproxy = {};
 
       websocketproxy.url = url || 'ws:proxy';
@@ -48,8 +40,6 @@ export default function () {
 
       return websocketproxy
     }
-
-    return WebSocketProxy
   };
 
   proxy.listeners = [];
