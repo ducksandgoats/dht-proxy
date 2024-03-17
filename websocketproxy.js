@@ -4,9 +4,6 @@ const GunProxy = function () {
   const proxy = {};
   // trystero tracker
   proxy.trystero_room = {};
-  // peerjs tracker
-  proxy.peerjs_peer = {};
-  proxy.peerjs_conn = {};
   // initialize to receive back the proxy object for a specific configuration
   proxy.initialize = function (conf, joinRoom) {
     var config = {};
@@ -15,12 +12,6 @@ const GunProxy = function () {
     config.trystero_app_id = conf.trystero_app_id || "gun_dht"
     config.trystero_mesh_id = conf.trystero_mesh_id || "graph_universal_node"
     if(joinRoom === undefined) config.trystero_enabled = false
-    //defaults peerjs
-    config.peerjs_enabled = conf.peerjs_enabled ?? false
-    config.peerjs_mesh_id = conf.peerjs_mesh_id || "graph_universal_node"
-    //defaults hyperdht
-    config.hyperdht_enabled = conf.hyperdht_enabled ?? false
-    config.hyperdht_hash = conf.hyperdht_hash || "graph_universal_node"
 
     //Trystero Module Settings
     if(config.trystero_enabled) {
@@ -30,34 +21,6 @@ const GunProxy = function () {
       const [sendMsg, onMsg] = proxy.trystero_room.makeAction('gun-protocol')
       onMsg(proxy.receiver)
       proxy.addSender(sendMsg)
-    }
-
-    // Peer JS Module
-    if(config.peerjs_enabled) {
-      console.log(Peer)
-      proxy.peerjs_peer = new Peer()
-
-      proxy.peerjs_conn = proxy.peerjs_peer.connect(config.peerjs_mesh_id)
-
-      proxy.peerjs_conn.on('open', function(){
-        console.log('Peer JS connected');
-      })
-
-      proxy.peerjs_peer.on('connection', function(conn) {
-        connection.on('data', function(data){
-          // Will print 'hi!'
-          console.log('PeerJS received', data)
-          proxy.receiver(data)
-        })
-        proxy.addSender(conn.send)
-      })
-
-      proxy.addSender(proxy.peerjs_conn.send)
-     }
-
-    // HyperDHT Module
-    if(config.hyperdht_enabled){
-      console.log('hyper still needs implementation');
     }
 
     // WebSocketProxy definition
@@ -126,7 +89,6 @@ const GunProxy = function () {
   }
 
   proxy.shutdown = function () {
-    proxy.peerjs_conn.close()
     proxy.trystero_room.leave()
   };
 
