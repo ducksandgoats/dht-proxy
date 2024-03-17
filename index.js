@@ -8,7 +8,7 @@ export default function () {
   proxy.initialize = function (app, ns, conf, joinRoom) {
 
     //Trystero Module Settings
-    proxy.trystero_room = joinRoom({...conf, app}, ns)
+    proxy.trystero_room = joinRoom({...conf, appId: app}, ns)
     proxy.trystero_room.onPeerJoin(id => console.log(`Trystero ID: ${id} joined`))
     proxy.trystero_room.onPeerLeave(id => console.log(`Trystero ID: ${id} left`))
     const [sendMsg, onMsg] = proxy.trystero_room.makeAction('gun-protocol')
