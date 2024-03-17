@@ -1,6 +1,7 @@
 {
   "name": "dht-proxy",
   "version": "1.0.0",
+  "type": "module",
   "description": "A proxy to bridge discovery over DHTs of all kinds for the Gun Protocol",
   "main": "index.js",
   "scripts": {
