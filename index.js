@@ -5,10 +5,10 @@ export default function () {
   // trystero tracker
   proxy.trystero_room = {};
   // initialize to receive back the proxy object for a specific configuration
-  proxy.initialize = function (conf, ns, joinRoom) {
+  proxy.initialize = function (app, ns, conf, joinRoom) {
 
     //Trystero Module Settings
-    proxy.trystero_room = joinRoom(conf, ns)
+    proxy.trystero_room = joinRoom({...conf, app}, ns)
     proxy.trystero_room.onPeerJoin(id => console.log(`Trystero ID: ${id} joined`))
     proxy.trystero_room.onPeerLeave(id => console.log(`Trystero ID: ${id} left`))
     const [sendMsg, onMsg] = proxy.trystero_room.makeAction('gun-protocol')
